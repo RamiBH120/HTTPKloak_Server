@@ -7,8 +7,8 @@ WORKDIR /app
 # Copier tout le module (go.mod, go.sum, sources)
 COPY . .
 
-RUN GOTOOLCHAIN=off go mod download
-RUN CGO_ENABLED=0 GOOS=linux GOTOOLCHAIN=off go build -a -installsuffix cgo -o httpcloak-server ./cmd/server
+RUN GOTOOLCHAIN=local go mod download
+RUN CGO_ENABLED=0 GOOS=linux GOTOOLCHAIN=local go build -a -installsuffix cgo -o httpcloak-server ./cmd/server
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates tzdata
