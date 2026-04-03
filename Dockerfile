@@ -4,17 +4,13 @@ RUN apk --no-cache add git ca-certificates
 
 WORKDIR /app
 
-# Copier le code source httpcloak local
-COPY httpcloak-main/ ./httpcloak-main/
+# Copier tout le module (go.mod, go.sum, sources)
+COPY . .
 
-# Copier le serveur
-COPY main.go .
-COPY go.mod .
-
-# Remplacer l'import distant par le code local
-RUN go mod edit -replace github.com/sardanioss/httpcloak=./httpcloak-main
-RUN go mod tidy
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o httpcloak-server .
+# go 1.26 dans go.mod mais on build avec 1.22 : forcer la toolchain
+RUN go mod edit -toolchain none
+RUN go mod download
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o httpcloak-server ./cmd/server
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates tzdata
