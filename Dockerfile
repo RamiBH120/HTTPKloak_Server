@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY go.mod ./
 
-RUN go get github.com/sardanioss/httpcloak/client@v1.6.1
+RUN go get github.com/sardanioss/httpcloak@v1.6.1
 
 RUN go mod download
 
