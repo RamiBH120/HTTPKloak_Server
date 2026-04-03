@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . .
 
 RUN go work sync
-RUN CGO_ENABLED=0 GOOS=linux go build -o httpcloak-server ./cmd/server
+RUN cd cmd/server && CGO_ENABLED=0 GOOS=linux go build -o /app/httpcloak-server .
 
 FROM alpine:3.20
 RUN apk --no-cache add ca-certificates tzdata
