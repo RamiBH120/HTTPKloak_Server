@@ -1,4 +1,4 @@
-FROM golang:1.22-alpine AS builder
+FROM golang:1.23-alpine AS builder
 
 RUN apk --no-cache add git ca-certificates
 
@@ -7,10 +7,8 @@ WORKDIR /app
 # Copier tout le module (go.mod, go.sum, sources)
 COPY . .
 
-# go 1.26 dans go.mod mais on build avec 1.22 : forcer la toolchain
-RUN go mod edit -toolchain none
-RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o httpcloak-server ./cmd/server
+RUN GOTOOLCHAIN=off go mod download
+RUN CGO_ENABLED=0 GOOS=linux GOTOOLCHAIN=off go build -a -installsuffix cgo -o httpcloak-server ./cmd/server
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates tzdata
